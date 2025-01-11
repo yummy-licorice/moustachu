@@ -246,27 +246,3 @@ proc renderFile*(filepath: string, jsonContext: JsonNode, partialsDir: string=""
   ## @param partialsDir   if not set; pulls path from filepath
   let nc = newContext(jsonContext)
   result = renderFile(filepath, nc, partialsDir)
-
-when isMainModule:
-  import json
-  import commandeer
-
-  proc usage(): string =
-    result = "Usage! moustachu <context>.json <template>.mustache [--file=<outputFilename>]"
-
-  commandline:
-    argument jsonFilename, string
-    argument tmplateFilename, string
-    option outputFilename, string, "file", "f"
-    exitoption "help", "h", usage()
-    exitoption "version", "v", "0.13.0"
-    errormsg usage()
-
-  var c = newContext(parseFile(jsonFilename))
-  var tmplate = readFile(tmplateFilename)
-  var pwd = parentDir(tmplateFileName)
-
-  if outputFilename.len == 0:
-    echo render(tmplate, c, pwd)
-  else:
-    writeFile(outputFilename, render(tmplate, c, pwd))
